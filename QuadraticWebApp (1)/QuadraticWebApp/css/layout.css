@@ -1,0 +1,292 @@
+/* =======================================================
+   layout.css
+   Estructura de página y estilos de componentes concretos.
+   Usa exclusivamente las variables definidas en theme.css.
+   ======================================================= */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Encabezado ---------- */
+
+.site-header {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-header__title {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.site-header__formula {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 15px;
+}
+
+/* ---------- Layout principal ---------- */
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 300px 1fr 320px;
+  grid-template-areas:
+    "inputs graph results"
+    "pasos  pasos  pasos";
+  gap: 20px;
+  padding: 24px 32px 32px;
+  align-items: start;
+}
+
+#panel-entrada { grid-area: inputs; }
+#panel-grafica { grid-area: graph; }
+#panel-resultados { grid-area: results; }
+#panel-pasos { grid-area: pasos; }
+
+@media (max-width: 980px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "inputs"
+      "graph"
+      "results"
+      "pasos";
+  }
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+  padding: 20px;
+}
+
+.panel__title {
+  font-size: 13px;
+  text-transform: none;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Panel de entrada ---------- */
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  background: var(--bg-field);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+}
+
+.btn-calcular {
+  width: 100%;
+  margin-top: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.btn-calcular:hover {
+  background: var(--accent-hover);
+}
+
+.btn-calcular:active {
+  transform: translateY(1px);
+}
+
+.input-error {
+  min-height: 18px;
+  color: var(--red);
+  font-size: 12.5px;
+  margin-top: 10px;
+}
+
+/* ---------- Panel de gráfica ---------- */
+
+.graph-panel {
+  padding: 0;
+  overflow: hidden;
+  min-height: 460px;
+  display: flex;
+}
+
+#grafica {
+  width: 100%;
+  height: 100%;
+  min-height: 460px;
+  display: block;
+}
+
+.graph-empty {
+  margin: auto;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+/* ---------- Panel de resultados ---------- */
+
+.result-placeholder {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.result-block {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.result-formula {
+  color: var(--accent);
+  font-size: 14.5px;
+  margin-bottom: 14px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 3px 0;
+  color: var(--text-primary);
+}
+
+.result-row span:first-child {
+  color: var(--text-secondary);
+}
+
+.result-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.tag-raiz {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--red);
+  margin-right: 7px;
+}
+
+.tag-vertice {
+  background: var(--yellow);
+}
+
+.result-error {
+  color: var(--red);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* ---------- Panel de pasos ---------- */
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.step-card {
+  background: var(--bg-panel-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+
+.step-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.step-card__numero {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-card__titulo {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.step-card__formula {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.step-card__sustitucion {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+.step-card__resultado {
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.step-card__interpretacion {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
