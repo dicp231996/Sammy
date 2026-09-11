@@ -1,0 +1,61 @@
+/* =======================================================
+   theme.css
+   Punto único de definición visual del sistema (paleta,
+   tipografías, radios). Equivalente web de DarkTheme.java:
+   ninguna otra hoja de estilos debe declarar colores propios.
+   ======================================================= */
+
+:root {
+  --bg-primary: #18181b;
+  --bg-panel: #212124;
+  --bg-panel-alt: #1c1c1f;
+  --bg-field: #2c2c31;
+  --border: #3a3a40;
+  --border-soft: #2a2a2f;
+
+  --text-primary: #e8e8ea;
+  --text-secondary: #96969c;
+  --text-dim: #6b6b70;
+
+  --accent: #00b8c4;
+  --accent-hover: #1fd0dc;
+  --accent-soft: rgba(0, 184, 196, 0.12);
+  --accent-ink: #052426;
+
+  --red: #ef6461;
+  --red-soft: rgba(239, 100, 97, 0.12);
+  --yellow: #e8b64f;
+
+  --grid-line: #29292e;
+  --axis-line: #6f6f75;
+
+  --font-display: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', 'Consolas', monospace;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.02) inset;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

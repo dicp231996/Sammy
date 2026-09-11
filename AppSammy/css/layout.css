@@ -1,0 +1,592 @@
+/* =======================================================
+   layout.css
+   Estructura de página y estilos de componentes concretos.
+   Usa exclusivamente las variables definidas en theme.css.
+   ======================================================= */
+
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Encabezado ---------- */
+
+.site-header {
+  padding: 28px 32px 20px;
+  border-bottom: 1px solid var(--border-soft);
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.site-header__title {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.site-header__formula {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 15px;
+}
+
+/* ---------- Pestañas de modo ---------- */
+
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 14px 32px 0;
+}
+
+.mode-tab {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 500;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.mode-tab:hover {
+  color: var(--text-primary);
+}
+
+.mode-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+/* ---------- Layout principal ---------- */
+
+.workspace {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 300px 1fr 320px;
+  grid-template-areas:
+    "inputs graph results"
+    "pasos  pasos  pasos";
+  gap: 20px;
+  padding: 20px 32px 32px;
+  align-items: start;
+}
+
+#panel-entrada { grid-area: inputs; }
+#panel-grafica { grid-area: graph; }
+#panel-resultados { grid-area: results; }
+#panel-pasos { grid-area: pasos; }
+#panel-estudio { display: none; }
+
+.workspace.modo-estudio {
+  grid-template-columns: 300px 1fr;
+  grid-template-areas:
+    "inputs graph"
+    "estudio estudio";
+}
+
+.workspace.modo-estudio #panel-resultados,
+.workspace.modo-estudio #panel-pasos {
+  display: none;
+}
+
+.workspace.modo-estudio #panel-estudio {
+  display: block;
+  grid-area: estudio;
+}
+
+@media (max-width: 980px) {
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "inputs"
+      "graph"
+      "results"
+      "pasos";
+  }
+
+  .workspace.modo-estudio {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "inputs"
+      "graph"
+      "estudio";
+  }
+}
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-panel);
+  padding: 20px;
+}
+
+.panel__title {
+  font-size: 13px;
+  text-transform: none;
+  color: var(--text-secondary);
+  margin: 0 0 16px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* ---------- Panel de entrada ---------- */
+
+.field {
+  margin-bottom: 14px;
+}
+
+.field label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+.field input {
+  width: 100%;
+  background: var(--bg-field);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  transition: border-color 0.15s ease;
+}
+
+.field input:focus {
+  border-color: var(--accent);
+}
+
+.btn-calcular {
+  width: 100%;
+  margin-top: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 14.5px;
+  padding: 11px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+.btn-calcular:hover {
+  background: var(--accent-hover);
+}
+
+.btn-calcular:active {
+  transform: translateY(1px);
+}
+
+.input-error {
+  min-height: 18px;
+  color: var(--red);
+  font-size: 12.5px;
+  margin-top: 10px;
+}
+
+/* ---------- Panel de gráfica ---------- */
+
+.graph-panel {
+  padding: 0;
+  overflow: hidden;
+  min-height: 460px;
+  display: flex;
+}
+
+#grafica {
+  width: 100%;
+  height: 100%;
+  min-height: 460px;
+  display: block;
+}
+
+.graph-empty {
+  margin: auto;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+/* ---------- Panel de resultados ---------- */
+
+.result-placeholder {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+.result-block {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+
+.result-formula {
+  color: var(--accent);
+  font-size: 14.5px;
+  margin-bottom: 14px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 3px 0;
+  color: var(--text-primary);
+}
+
+.result-row span:first-child {
+  color: var(--text-secondary);
+}
+
+.result-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+}
+
+.tag-raiz {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--red);
+  margin-right: 7px;
+}
+
+.tag-vertice {
+  background: var(--yellow);
+}
+
+.result-error {
+  color: var(--red);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* ---------- Panel de pasos ---------- */
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+.step-card {
+  background: var(--bg-panel-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+}
+
+.step-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.step-card__numero {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-card__titulo {
+  font-weight: 600;
+  font-size: 14.5px;
+}
+
+.step-card__sustitucion {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  margin-bottom: 10px;
+  word-break: break-word;
+}
+
+.step-card__resultado {
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.step-card__interpretacion {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ---------- Notación matemática (fracciones y raíces) ---------- */
+
+.math-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 4px;
+  line-height: 1.15;
+}
+
+.math-frac .math-num {
+  border-bottom: 1.4px solid currentColor;
+  padding: 0 4px 2px;
+}
+
+.math-frac .math-den {
+  padding: 2px 4px 0;
+}
+
+.math-sqrt {
+  display: inline-flex;
+  align-items: flex-start;
+  margin: 0 2px;
+}
+
+.math-sqrt .math-sqrt-radical {
+  transform: scaleY(1.25) translateY(1px);
+  margin-right: 1px;
+}
+
+.math-sqrt .math-sqrt-content {
+  border-top: 1.4px solid currentColor;
+  padding: 0 3px;
+}
+
+/* Las fórmulas generales ahora combinan texto y fracciones/raíces HTML,
+   así que les damos un poco más de tamaño y contraste. */
+.step-card__formula {
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+/* ---------- Panel de Estudio (guía interactiva) ---------- */
+
+.study-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.study-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.study-card__numero {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+.study-card__titulo {
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.study-card__guia {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.55;
+  margin: 4px 0 10px;
+}
+
+.study-card__formula {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--bg-panel-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.study-card__resultado {
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.study-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.study-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.study-input__field {
+  background: var(--bg-field);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  width: 130px;
+}
+
+.study-input__field:focus {
+  border-color: var(--accent);
+}
+
+.study-input__field.correcto {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.study-input__field.incorrecto {
+  border-color: var(--red);
+  background: var(--red-soft);
+}
+
+.study-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.study-option {
+  text-align: left;
+  background: var(--bg-field);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 13.5px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.study-option:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.study-option:disabled {
+  cursor: default;
+}
+
+.study-option.correcta {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.study-option.incorrecta {
+  border-color: var(--red);
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.study-feedback {
+  font-size: 13px;
+  line-height: 1.6;
+  min-height: 0;
+  margin-bottom: 12px;
+}
+
+.study-feedback.exito {
+  color: var(--accent);
+}
+
+.study-feedback.error {
+  color: var(--red);
+}
+
+.study-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-estudio {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border: none;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13.5px;
+  padding: 9px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-estudio:hover {
+  background: var(--accent-hover);
+}
+
+.study-final {
+  text-align: center;
+  padding: 24px 12px;
+}
+
+.study-final__icono {
+  width: 44px;
+  height: 44px;
+  line-height: 44px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 20px;
+  margin: 0 auto 16px;
+}
+
+.study-final h3 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+
+.study-final p {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  line-height: 1.6;
+  max-width: 480px;
+  margin: 0 auto 20px;
+}
+
+.study-final .btn-estudio {
+  padding: 10px 22px;
+}

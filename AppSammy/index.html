@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Funciones Cuadráticas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/theme.css" />
+  <link rel="stylesheet" href="css/layout.css" />
+</head>
+<body>
+  <div class="page">
+
+    <header class="site-header">
+      <h1 class="site-header__title">Calculadora de Funciones Cuadráticas</h1>
+      <span class="site-header__formula">f(x) = a·x² + b·x + c</span>
+    </header>
+
+    <nav class="mode-tabs">
+      <button class="mode-tab active" id="tab-calculadora" data-modo="calculadora">Calculadora</button>
+      <button class="mode-tab" id="tab-estudio" data-modo="estudio">Estudio</button>
+    </nav>
+
+    <main class="workspace" id="workspace">
+
+      <!-- Panel de entrada -->
+      <section class="panel" id="panel-entrada">
+        <h2 class="panel__title">Coeficientes</h2>
+
+        <div class="field">
+          <label for="input-a">Coeficiente a</label>
+          <input type="text" id="input-a" inputmode="decimal" value="2" />
+        </div>
+
+        <div class="field">
+          <label for="input-b">Coeficiente b</label>
+          <input type="text" id="input-b" inputmode="decimal" value="0" />
+        </div>
+
+        <div class="field">
+          <label for="input-c">Coeficiente c</label>
+          <input type="text" id="input-c" inputmode="decimal" value="-4" />
+        </div>
+
+        <button class="btn-calcular" id="btn-calcular">Calcular</button>
+        <div class="input-error" id="input-error"></div>
+      </section>
+
+      <!-- Panel de gráfica -->
+      <section class="panel graph-panel" id="panel-grafica">
+        <canvas id="grafica"></canvas>
+      </section>
+
+      <!-- Panel de resultados -->
+      <section class="panel" id="panel-resultados">
+        <h2 class="panel__title">Resultados</h2>
+        <div id="resultados-contenido" class="result-placeholder">
+          Ingresa los coeficientes y presiona Calcular.
+        </div>
+      </section>
+
+      <!-- Panel de desarrollo paso a paso -->
+      <section class="panel" id="panel-pasos">
+        <h2 class="panel__title">Desarrollo paso a paso</h2>
+        <div id="pasos-contenido" class="result-placeholder">
+          El desarrollo paso a paso aparecerá aquí.
+        </div>
+      </section>
+
+      <!-- Panel del modo Estudio (guía interactiva) -->
+      <section class="panel" id="panel-estudio">
+        <h2 class="panel__title">Estudio guiado</h2>
+        <div id="estudio-contenido" class="result-placeholder">
+          Presiona Calcular y luego cambia a la pestaña Estudio para practicar.
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===== model ===== -->
+  <script src="js/model/QuadraticFunction.js"></script>
+
+  <!-- ===== data ===== -->
+  <script src="js/data/FormatoMatematico.js"></script>
+  <script src="js/data/ResultadoCalculo.js"></script>
+  <script src="js/data/CalculadoraCuadratica.js"></script>
+  <script src="js/data/GeneradorPasos.js"></script>
+  <script src="js/data/GeneradorEjercicios.js"></script>
+
+  <!-- ===== ui ===== -->
+  <script src="js/ui/GraphPanel.js"></script>
+  <script src="js/ui/InputPanel.js"></script>
+  <script src="js/ui/ResultPanel.js"></script>
+  <script src="js/ui/StepsPanel.js"></script>
+  <script src="js/ui/EstudioPanel.js"></script>
+
+  <!-- ===== app ===== -->
+  <script src="js/app/main.js"></script>
+</body>
+</html>
