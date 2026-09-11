@@ -15,6 +15,9 @@ window.QuadApp.app = window.QuadApp.app || {};
       campoA: document.getElementById('input-a'),
       campoB: document.getElementById('input-b'),
       campoC: document.getElementById('input-c'),
+      negA: document.getElementById('input-a-neg'),
+      negB: document.getElementById('input-b-neg'),
+      negC: document.getElementById('input-c-neg'),
       boton: document.getElementById('btn-calcular'),
       etiquetaError: document.getElementById('input-error'),
     });

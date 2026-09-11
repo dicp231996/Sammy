@@ -115,10 +115,16 @@ window.QuadApp.ui = window.QuadApp.ui || {};
 
     _cuerpoNumerico(ej) {
       const campos = ej.campos.map((campo) => `
-        <label class="study-input">
-          <span>${campo.label}</span>
-          <input type="text" inputmode="decimal" class="study-input__field" data-campo="${campo.id}" ${this.resuelto ? 'disabled' : ''} />
-        </label>`).join('');
+        <div class="study-input-row">
+          <label class="study-input">
+            <span>${campo.label}</span>
+            <input type="text" inputmode="decimal" class="study-input__field" data-campo="${campo.id}" ${this.resuelto ? 'disabled' : ''} />
+          </label>
+          <label class="signo-toggle" title="Marcar si es negativo">
+            <input type="checkbox" class="study-input__neg" data-campo-neg="${campo.id}" ${this.resuelto ? 'disabled' : ''} />
+            <span class="signo-toggle__box">−</span>
+          </label>
+        </div>`).join('');
 
       return `
         <div class="study-inputs">${campos}</div>
@@ -140,26 +146,35 @@ window.QuadApp.ui = window.QuadApp.ui || {};
 
     _verificarNumerico() {
       const ej = this._ejercicioActual();
-      const inputs = this.contenedor.querySelectorAll('.study-input__field');
 
       let todasCorrectas = true;
-      const detalles = [];
 
-      ej.campos.forEach((campo, i) => {
-        const valorTexto = inputs[i].value.trim().replace(',', '.');
-        const valorUsuario = Number(valorTexto);
-        const esValido = valorTexto !== '' && Number.isFinite(valorUsuario);
+      ej.campos.forEach((campo) => {
+        const input = this.contenedor.querySelector(`[data-campo="${campo.id}"]`);
+        const checkboxNeg = this.contenedor.querySelector(`[data-campo-neg="${campo.id}"]`);
+
+        const magnitud = this._parsearMagnitud(input.value);
+        const esValido = magnitud !== null;
+        const valorUsuario = esValido ? (checkboxNeg.checked ? -magnitud : magnitud) : null;
         const correcta = esValido && redondear1(valorUsuario) === redondear1(campo.esperado);
 
-        inputs[i].disabled = true;
-        inputs[i].classList.add(correcta ? 'correcto' : 'incorrecto');
+        input.disabled = true;
+        checkboxNeg.disabled = true;
+        input.classList.add(correcta ? 'correcto' : 'incorrecto');
         if (!correcta) todasCorrectas = false;
-        detalles.push(correcta);
       });
 
       this.resuelto = true;
       this._mostrarFeedback(todasCorrectas, ej.explicacion);
       this._mostrarBotonSiguiente();
+    }
+
+    /** Extrae la magnitud (valor absoluto) de un texto, ignorando cualquier signo tecleado. */
+    _parsearMagnitud(texto) {
+      const limpio = texto.trim().replace(',', '.').replace(/^-/, '');
+      if (limpio === '') return null;
+      const valor = Number(limpio);
+      return Number.isFinite(valor) ? Math.abs(valor) : null;
     }
 
     _verificarOpcion(indiceElegido) {

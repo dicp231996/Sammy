@@ -29,20 +29,39 @@
       <!-- Panel de entrada -->
       <section class="panel" id="panel-entrada">
         <h2 class="panel__title">Coeficientes</h2>
+        <p class="panel__hint">Marca la casilla “−” si el valor es negativo.</p>
 
         <div class="field">
           <label for="input-a">Coeficiente a</label>
-          <input type="text" id="input-a" inputmode="decimal" value="2" />
+          <div class="field-row">
+            <input type="text" id="input-a" inputmode="decimal" value="2" />
+            <label class="signo-toggle" title="Marcar si es negativo">
+              <input type="checkbox" id="input-a-neg" />
+              <span class="signo-toggle__box">−</span>
+            </label>
+          </div>
         </div>
 
         <div class="field">
           <label for="input-b">Coeficiente b</label>
-          <input type="text" id="input-b" inputmode="decimal" value="0" />
+          <div class="field-row">
+            <input type="text" id="input-b" inputmode="decimal" value="0" />
+            <label class="signo-toggle" title="Marcar si es negativo">
+              <input type="checkbox" id="input-b-neg" />
+              <span class="signo-toggle__box">−</span>
+            </label>
+          </div>
         </div>
 
         <div class="field">
           <label for="input-c">Coeficiente c</label>
-          <input type="text" id="input-c" inputmode="decimal" value="-4" />
+          <div class="field-row">
+            <input type="text" id="input-c" inputmode="decimal" value="4" />
+            <label class="signo-toggle" title="Marcar si es negativo">
+              <input type="checkbox" id="input-c-neg" checked />
+              <span class="signo-toggle__box">−</span>
+            </label>
+          </div>
         </div>
 
         <button class="btn-calcular" id="btn-calcular">Calcular</button>
