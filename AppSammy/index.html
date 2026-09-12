@@ -22,6 +22,8 @@
     <nav class="mode-tabs">
       <button class="mode-tab active" id="tab-calculadora" data-modo="calculadora">Calculadora</button>
       <button class="mode-tab" id="tab-estudio" data-modo="estudio">Estudio</button>
+      <button class="mode-tab" id="tab-prueba" data-modo="prueba">Prueba</button>
+      <button class="mode-tab" id="tab-conceptos" data-modo="conceptos">Conceptos</button>
     </nav>
 
     <main class="workspace" id="workspace">
@@ -97,6 +99,17 @@
         </div>
       </section>
 
+      <!-- Panel del modo Prueba (examen cronometrado) -->
+      <section class="panel" id="panel-prueba">
+        <div id="prueba-contenido"></div>
+      </section>
+
+      <!-- Panel del modo Conceptos (glosario) -->
+      <section class="panel" id="panel-conceptos">
+        <h2 class="panel__title">Conceptos</h2>
+        <div id="conceptos-contenido"></div>
+      </section>
+
     </main>
   </div>
 
@@ -109,13 +122,18 @@
   <script src="js/data/CalculadoraCuadratica.js"></script>
   <script src="js/data/GeneradorPasos.js"></script>
   <script src="js/data/GeneradorEjercicios.js"></script>
+  <script src="js/data/GeneradorPool.js"></script>
+  <script src="js/data/Conceptos.js"></script>
 
   <!-- ===== ui ===== -->
   <script src="js/ui/GraphPanel.js"></script>
   <script src="js/ui/InputPanel.js"></script>
   <script src="js/ui/ResultPanel.js"></script>
   <script src="js/ui/StepsPanel.js"></script>
+  <script src="js/ui/PreguntaWidget.js"></script>
   <script src="js/ui/EstudioPanel.js"></script>
+  <script src="js/ui/PruebaPanel.js"></script>
+  <script src="js/ui/ConceptosPanel.js"></script>
 
   <!-- ===== app ===== -->
   <script src="js/app/main.js"></script>

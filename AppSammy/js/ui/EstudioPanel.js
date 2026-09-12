@@ -3,18 +3,14 @@
  *
  * Ejecuta la guía interactiva del modo "Estudio": muestra un ejercicio
  * a la vez (informativo, numérico o de opción múltiple), valida la
- * respuesta del usuario contra el valor esperado (redondeado a 1
- * decimal) y da feedback: si acierta lo confirma, si se equivoca le
- * muestra la respuesta correcta y la sustitución que la explica.
+ * respuesta contra el valor esperado y da feedback inmediato. La
+ * mecánica de pregunta/validación vive en ui/PreguntaWidget.js, que
+ * también usa ui/PruebaPanel.js.
  */
 window.QuadApp = window.QuadApp || {};
 window.QuadApp.ui = window.QuadApp.ui || {};
 
 (function (ns) {
-  function redondear1(n) {
-    return Math.round(Number(n) * 10) / 10;
-  }
-
   class EstudioPanel {
     constructor(contenedor) {
       this.contenedor = contenedor;
@@ -79,17 +75,18 @@ window.QuadApp.ui = window.QuadApp.ui || {};
         return;
       }
 
+      const W = ns.PreguntaWidget;
       const ej = this._ejercicioActual();
       const numero = this.indice + 1;
       const total = this.ejercicios.length;
 
       let cuerpo;
       if (ej.tipo === 'info') {
-        cuerpo = this._cuerpoInfo(ej);
+        cuerpo = W.cuerpoInfo(ej, this._esUltimo() ? 'Finalizar' : 'Continuar');
       } else if (ej.tipo === 'numeric') {
-        cuerpo = this._cuerpoNumerico(ej);
+        cuerpo = W.cuerpoNumerico(ej, this.resuelto);
       } else {
-        cuerpo = this._cuerpoOpciones(ej);
+        cuerpo = W.cuerpoOpciones(ej, this.resuelto);
       }
 
       this.contenedor.innerHTML = `
@@ -104,113 +101,25 @@ window.QuadApp.ui = window.QuadApp.ui || {};
         </div>`;
     }
 
-    _cuerpoInfo(ej) {
-      const esUltimo = this._esUltimo();
-      return `
-        <div class="study-card__resultado">${ej.resultado}</div>
-        <div class="study-actions">
-          <button class="btn-estudio" data-accion="siguiente">${esUltimo ? 'Finalizar' : 'Continuar'}</button>
-        </div>`;
-    }
-
-    _cuerpoNumerico(ej) {
-      const campos = ej.campos.map((campo) => `
-        <div class="study-input-row">
-          <label class="study-input">
-            <span>${campo.label}</span>
-            <input type="text" inputmode="decimal" class="study-input__field" data-campo="${campo.id}" ${this.resuelto ? 'disabled' : ''} />
-          </label>
-          <label class="signo-toggle" title="Marcar si es negativo">
-            <input type="checkbox" class="study-input__neg" data-campo-neg="${campo.id}" ${this.resuelto ? 'disabled' : ''} />
-            <span class="signo-toggle__box">−</span>
-          </label>
-        </div>`).join('');
-
-      return `
-        <div class="study-inputs">${campos}</div>
-        <div class="study-feedback" id="study-feedback"></div>
-        <div class="study-actions" id="study-actions">
-          ${this.resuelto ? '' : '<button class="btn-estudio" data-accion="verificar">Verificar</button>'}
-        </div>`;
-    }
-
-    _cuerpoOpciones(ej) {
-      const opciones = ej.opciones.map((texto, i) => `
-        <button class="study-option" data-opcion="${i}" ${this.resuelto ? 'disabled' : ''}>${texto}</button>`).join('');
-
-      return `
-        <div class="study-options">${opciones}</div>
-        <div class="study-feedback" id="study-feedback"></div>
-        <div class="study-actions" id="study-actions"></div>`;
-    }
-
     _verificarNumerico() {
+      const W = ns.PreguntaWidget;
       const ej = this._ejercicioActual();
-
-      let todasCorrectas = true;
-
-      ej.campos.forEach((campo) => {
-        const input = this.contenedor.querySelector(`[data-campo="${campo.id}"]`);
-        const checkboxNeg = this.contenedor.querySelector(`[data-campo-neg="${campo.id}"]`);
-
-        const magnitud = this._parsearMagnitud(input.value);
-        const esValido = magnitud !== null;
-        const valorUsuario = esValido ? (checkboxNeg.checked ? -magnitud : magnitud) : null;
-        const correcta = esValido && redondear1(valorUsuario) === redondear1(campo.esperado);
-
-        input.disabled = true;
-        checkboxNeg.disabled = true;
-        input.classList.add(correcta ? 'correcto' : 'incorrecto');
-        if (!correcta) todasCorrectas = false;
-      });
-
-      this.resuelto = true;
-      this._mostrarFeedback(todasCorrectas, ej.explicacion);
-      this._mostrarBotonSiguiente();
-    }
-
-    /** Extrae la magnitud (valor absoluto) de un texto, ignorando cualquier signo tecleado. */
-    _parsearMagnitud(texto) {
-      const limpio = texto.trim().replace(',', '.').replace(/^-/, '');
-      if (limpio === '') return null;
-      const valor = Number(limpio);
-      return Number.isFinite(valor) ? Math.abs(valor) : null;
+      const correcta = W.verificarNumerico(this.contenedor, ej);
+      this._registrarRespuesta(correcta, ej);
     }
 
     _verificarOpcion(indiceElegido) {
+      const W = ns.PreguntaWidget;
       const ej = this._ejercicioActual();
-      const botones = this.contenedor.querySelectorAll('.study-option');
-      const correcta = indiceElegido === ej.correcta;
+      const correcta = W.verificarOpcion(this.contenedor, ej, indiceElegido);
+      this._registrarRespuesta(correcta, ej);
+    }
 
-      botones.forEach((boton, i) => {
-        boton.disabled = true;
-        if (i === ej.correcta) boton.classList.add('correcta');
-        if (i === indiceElegido && !correcta) boton.classList.add('incorrecta');
-      });
-
+    _registrarRespuesta(correcta, ej) {
+      const W = ns.PreguntaWidget;
       this.resuelto = true;
-      this._mostrarFeedback(correcta, ej.explicacion);
-      this._mostrarBotonSiguiente();
-    }
-
-    _mostrarFeedback(correcta, explicacion) {
-      const feedback = this.contenedor.querySelector('#study-feedback');
-      if (!feedback) return;
-
-      if (correcta) {
-        feedback.className = 'study-feedback exito';
-        feedback.innerHTML = `<strong>¡Correcto!</strong> ${explicacion || ''}`;
-      } else {
-        feedback.className = 'study-feedback error';
-        feedback.innerHTML = `<strong>No es correcto.</strong> La solución es: ${explicacion || ''}`;
-      }
-    }
-
-    _mostrarBotonSiguiente() {
-      const acciones = this.contenedor.querySelector('#study-actions');
-      if (!acciones) return;
-      const esUltimo = this._esUltimo();
-      acciones.innerHTML = `<button class="btn-estudio" data-accion="siguiente">${esUltimo ? 'Finalizar' : 'Siguiente paso'}</button>`;
+      W.mostrarFeedback(this.contenedor, correcta, ej.explicacion);
+      W.mostrarBotonSiguiente(this.contenedor, this._esUltimo() ? 'Finalizar' : 'Siguiente paso');
     }
 
     _renderFinal() {

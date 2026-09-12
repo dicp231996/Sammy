@@ -48,7 +48,7 @@ window.QuadApp.data = window.QuadApp.data || {};
       resultado.tipoRaices = 'Una raíz real doble';
     } else {
       const parteReal = -b / (2 * a);
-      const parteImaginaria = Math.sqrt(-discriminante) / (2 * a);
+      const parteImaginaria = Math.sqrt(-discriminante) / (2 * Math.abs(a));
       resultado.setRaicesComplejas(parteReal, parteImaginaria);
       resultado.tipoRaices = 'Raíces complejas conjugadas';
     }

@@ -38,6 +38,7 @@
 
 .mode-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 4px;
   padding: 14px 32px 0;
 }
@@ -100,6 +101,43 @@
 .workspace.modo-estudio #panel-estudio {
   display: block;
   grid-area: estudio;
+}
+
+#panel-prueba,
+#panel-conceptos {
+  display: none;
+}
+
+.workspace.modo-prueba,
+.workspace.modo-conceptos {
+  grid-template-columns: 1fr;
+}
+
+.workspace.modo-prueba { grid-template-areas: "prueba"; }
+.workspace.modo-conceptos { grid-template-areas: "conceptos"; }
+
+.workspace.modo-prueba #panel-entrada,
+.workspace.modo-prueba #panel-grafica,
+.workspace.modo-prueba #panel-resultados,
+.workspace.modo-prueba #panel-pasos,
+.workspace.modo-conceptos #panel-entrada,
+.workspace.modo-conceptos #panel-grafica,
+.workspace.modo-conceptos #panel-resultados,
+.workspace.modo-conceptos #panel-pasos {
+  display: none;
+}
+
+.workspace.modo-prueba #panel-prueba {
+  display: block;
+  grid-area: prueba;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.workspace.modo-conceptos #panel-conceptos {
+  display: block;
+  grid-area: conceptos;
 }
 
 @media (max-width: 980px) {
@@ -659,4 +697,145 @@
 
 .study-final .btn-estudio {
   padding: 10px 22px;
+}
+
+/* ---------- Panel de Prueba (examen cronometrado) ---------- */
+
+.prueba-inicio {
+  text-align: center;
+  padding: 12px 8px 20px;
+}
+
+.prueba-inicio h3 {
+  font-size: 17px;
+  margin: 0 0 16px;
+}
+
+.prueba-inicio__lista {
+  text-align: left;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.prueba-inicio__lista li {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  padding-left: 20px;
+  position: relative;
+}
+
+.prueba-inicio__lista li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.prueba-inicio .btn-estudio {
+  padding: 11px 26px;
+  font-size: 14.5px;
+}
+
+.prueba-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.prueba-header__progreso {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+.prueba-header__timer {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.prueba-header__timer--urgente {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.prueba-final {
+  text-align: center;
+  padding: 20px 12px;
+}
+
+.prueba-final__aviso {
+  color: var(--red);
+  font-size: 13px;
+  margin: 0 0 16px;
+}
+
+.prueba-final__nota {
+  font-family: var(--font-mono);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.prueba-final__nota.aprobado { color: var(--accent); }
+.prueba-final__nota.reprobado { color: var(--red); }
+
+.prueba-final__detalle {
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  margin: 0 0 6px;
+}
+
+.prueba-final__estado {
+  font-size: 13.5px;
+  font-weight: 600;
+  margin: 0 0 22px;
+}
+
+.prueba-final__estado.aprobado { color: var(--accent); }
+.prueba-final__estado.reprobado { color: var(--red); }
+
+/* ---------- Panel de Conceptos (glosario) ---------- */
+
+.conceptos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.concepto-card {
+  background: var(--bg-panel-alt);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  padding: 18px 20px;
+}
+
+.concepto-card__icono {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.concepto-card__termino {
+  font-weight: 600;
+  font-size: 14.5px;
+  margin-bottom: 8px;
+}
+
+.concepto-card__texto {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
 }

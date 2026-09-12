@@ -37,13 +37,18 @@ QuadraticWebApp/
     │   ├── ResultadoCalculo.js        -> QuadApp.data (objeto de resultados)
     │   ├── CalculadoraCuadratica.js   -> QuadApp.data (lógica de cálculo)
     │   ├── GeneradorPasos.js          -> narra el desarrollo paso a paso (solo lectura)
-    │   └── GeneradorEjercicios.js     -> arma la guía interactiva del modo Estudio
+    │   ├── GeneradorEjercicios.js     -> arma la guía interactiva del modo Estudio
+    │   ├── GeneradorPool.js           -> banco de 200+ preguntas para el modo Prueba
+    │   └── Conceptos.js               -> glosario estático para la pestaña Conceptos
     ├── ui/
-    │   ├── GraphPanel.js    -> QuadApp.ui (dibuja en <canvas>, escala 1:1)
-    │   ├── InputPanel.js    -> QuadApp.ui (campos a, b, c + botón)
-    │   ├── ResultPanel.js   -> QuadApp.ui (resultados en texto)
-    │   ├── StepsPanel.js    -> QuadApp.ui (tarjetas de desarrollo paso a paso)
-    │   └── EstudioPanel.js  -> QuadApp.ui (guía interactiva con feedback)
+    │   ├── GraphPanel.js       -> QuadApp.ui (dibuja en <canvas>, escala 1:1)
+    │   ├── InputPanel.js       -> QuadApp.ui (campos a, b, c + botón)
+    │   ├── ResultPanel.js      -> QuadApp.ui (resultados en texto)
+    │   ├── StepsPanel.js       -> QuadApp.ui (tarjetas de desarrollo paso a paso)
+    │   ├── PreguntaWidget.js   -> lógica compartida de pregunta/validación (Estudio y Prueba)
+    │   ├── EstudioPanel.js     -> QuadApp.ui (guía interactiva con feedback)
+    │   ├── PruebaPanel.js      -> QuadApp.ui (examen cronometrado con nota chilena)
+    │   └── ConceptosPanel.js   -> QuadApp.ui (glosario en tarjetas)
     └── app/
         └── main.js          -> QuadApp.app (equivalente a Main+MainFrame)
 ```
@@ -57,13 +62,27 @@ QuadraticWebApp/
   intersecciones con los ejes, dilatación/contracción), con la fórmula
   general (fracciones y raíces reales, no texto plano) y la sustitución
   numérica.
-- **Modo Estudio** (pestaña superior): una guía interactiva que resuelve
-  la misma función paso a paso pidiéndote que completes cada cálculo.
+- **Modo Estudio** (pestaña): una guía interactiva que resuelve la
+  función actual paso a paso pidiéndote que completes cada cálculo.
   Si aciertas lo confirma; si te equivocas, te muestra la respuesta
   correcta y la sustitución que la explica, antes de dejarte avanzar.
+- **Modo Prueba** (pestaña): examen cronometrado de 30 preguntas
+  elegidas al azar de un banco de más de 200 (generado a partir de
+  funciones cuadráticas variadas: dos raíces, raíz doble, sin raíces
+  reales, dilatación/contracción/ninguna). 90 minutos con cronómetro
+  visible; mismo formato guiado que Estudio en cada pregunta. Al
+  terminar (o cuando se acaba el tiempo) entrega una calificación en
+  escala chilena de 1.0 a 7.0, con exigencia del 60% para el 4.0.
+- **Conceptos** (pestaña): glosario con explicaciones cercanas y
+  correctas de los términos clave (coeficientes, discriminante,
+  vértice, concavidad, dilatación/contracción, raíces complejas, etc.).
 - **Gráfica con escala 1:1**: una unidad en el eje X ocupa exactamente
   los mismos píxeles que una unidad en el eje Y, así la forma real de
   la parábola no se distorsiona visualmente.
+- **Signo con checkbox**: cada campo numérico (coeficientes y
+  respuestas en Estudio/Prueba) se ingresa como magnitud, con una
+  casilla "−" para marcar si es negativo. Esto evita depender de la
+  tecla "-" del teclado numérico del celular.
 - Todos los números se muestran redondeados a 1 decimal.
 
 ## Diferencias frente a la versión de escritorio

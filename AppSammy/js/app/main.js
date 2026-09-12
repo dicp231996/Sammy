@@ -2,14 +2,17 @@
  * app/main.js
  *
  * Punto de entrada de la aplicación web. Instancia los paneles,
- * los conecta entre sí, maneja el cambio de pestaña Calculadora/Estudio
- * y arranca la app cuando el DOM está listo.
- * Equivalente a Main.java + MainFrame.java del proyecto de escritorio.
+ * los conecta entre sí, maneja el cambio de pestaña (Calculadora,
+ * Estudio, Prueba, Conceptos) y arranca la app cuando el DOM está
+ * listo. Equivalente a Main.java + MainFrame.java del proyecto de
+ * escritorio.
  */
 window.QuadApp = window.QuadApp || {};
 window.QuadApp.app = window.QuadApp.app || {};
 
 (function (app, model, data, ui) {
+  const MODOS = ['calculadora', 'estudio', 'prueba', 'conceptos'];
+
   function iniciar() {
     const inputPanel = new ui.InputPanel({
       campoA: document.getElementById('input-a'),
@@ -26,19 +29,29 @@ window.QuadApp.app = window.QuadApp.app || {};
     const resultPanel = new ui.ResultPanel(document.getElementById('resultados-contenido'));
     const stepsPanel = new ui.StepsPanel(document.getElementById('pasos-contenido'));
     const estudioPanel = new ui.EstudioPanel(document.getElementById('estudio-contenido'));
+    // eslint-disable-next-line no-unused-vars
+    const pruebaPanel = new ui.PruebaPanel(document.getElementById('prueba-contenido'));
+    // eslint-disable-next-line no-unused-vars
+    const conceptosPanel = new ui.ConceptosPanel(document.getElementById('conceptos-contenido'));
 
     const workspace = document.getElementById('workspace');
-    const tabCalculadora = document.getElementById('tab-calculadora');
-    const tabEstudio = document.getElementById('tab-estudio');
+    const tabs = {};
+    MODOS.forEach((modo) => {
+      tabs[modo] = document.getElementById(`tab-${modo}`);
+    });
 
     function cambiarModo(modo) {
-      workspace.classList.toggle('modo-estudio', modo === 'estudio');
-      tabCalculadora.classList.toggle('active', modo === 'calculadora');
-      tabEstudio.classList.toggle('active', modo === 'estudio');
+      MODOS.forEach((m) => {
+        if (m !== 'calculadora') {
+          workspace.classList.toggle(`modo-${m}`, m === modo);
+        }
+        tabs[m].classList.toggle('active', m === modo);
+      });
     }
 
-    tabCalculadora.addEventListener('click', () => cambiarModo('calculadora'));
-    tabEstudio.addEventListener('click', () => cambiarModo('estudio'));
+    MODOS.forEach((modo) => {
+      tabs[modo].addEventListener('click', () => cambiarModo(modo));
+    });
 
     inputPanel.setListener((a, b, c) => {
       try {
