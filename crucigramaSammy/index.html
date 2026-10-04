@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Creador de Crucigramas</title>
+  <!-- Fuentes de Google (si no hay internet se usan las del sistema) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Caveat:wght@400;700&family=Lobster&family=Merriweather:wght@400;700&family=Montserrat:wght@400;700&family=Nunito:wght@400;700&family=Pacifico&family=Permanent+Marker&family=Playfair+Display:wght@400;700&family=Poppins:wght@400;700&family=Press+Start+2P&family=Roboto:wght@400;700&family=Special+Elite&display=swap">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>🧩 Creador de Crucigramas</h1>
+    <ol class="stepper" id="stepper">
+      <li data-step="count">1. Cantidad</li>
+      <li data-step="words">2. Palabras</li>
+      <li data-step="clues">3. Definiciones</li>
+      <li data-step="board">4. Crucigrama</li>
+    </ol>
+  </header>
+
+  <main>
+    <!-- PASO 1: cantidad de palabras -->
+    <section class="step card" id="step-count" hidden>
+      <form id="count-form">
+      <h2>Título del crucigrama</h2>
+      <p class="hint">Aparecerá dibujado sobre el crucigrama y en el PDF. Podrás cambiarlo después.</p>
+      <div class="row">
+        <input id="start-title" type="text" class="title-field" maxlength="80" value="Mi crucigrama" aria-label="Título del crucigrama">
+      </div>
+      <h2 class="mt">¿Cuántas palabras tendrá tu crucigrama?</h2>
+      <p class="hint">Mínimo <strong>5</strong>, máximo <strong>50</strong>.</p>
+      <div class="row">
+        <input id="count-range" type="range" min="5" max="50" value="10" aria-label="Cantidad (deslizador)">
+        <input id="count-input" type="number" min="5" max="50" value="10" required aria-label="Cantidad de palabras">
+        <button type="submit" class="btn btn-primary">Continuar →</button>
+      </div>
+      </form>
+      <p class="error" id="count-error" role="alert"></p>
+    </section>
+
+    <!-- PASO 2: Pool de palabras -->
+    <section class="step card" id="step-words" hidden>
+      <div class="step-head">
+        <h2>Agrega las palabras al Pool</h2>
+        <span class="badge" id="words-progress">0 / 10</span>
+      </div>
+      <div class="progress"><div class="progress-bar" id="words-bar"></div></div>
+      <p class="hint">Una a la vez. Se te pedirá confirmar cada palabra. Las tildes se quitan automáticamente (la Ñ se conserva).</p>
+      <form id="word-form" class="row">
+        <input id="word-input" type="text" maxlength="30" autocomplete="off" placeholder="Escribe una palabra…" aria-label="Palabra">
+        <button type="submit" class="btn btn-primary" id="word-add">Agregar</button>
+      </form>
+      <p class="error" id="word-error" role="alert"></p>
+      <ul class="pool" id="pool-list" aria-label="Pool de palabras"></ul>
+      <div class="actions">
+        <button class="btn" id="words-back">← Cambiar cantidad</button>
+        <button class="btn btn-primary" id="words-next" disabled>Continuar a definiciones →</button>
+      </div>
+    </section>
+
+    <!-- PASO 3: definiciones -->
+    <section class="step card" id="step-clues" hidden>
+      <div class="step-head">
+        <h2>Definiciones</h2>
+        <span class="badge" id="clues-progress">0 / 10</span>
+      </div>
+      <div class="progress"><div class="progress-bar" id="clues-bar"></div></div>
+      <div class="clue-editor">
+        <div class="clue-word">
+          <span class="clue-index" id="clue-index">Palabra 1</span>
+          <span class="clue-letters" id="clue-word">—</span>
+          <span class="hint" id="clue-length"></span>
+        </div>
+        <form id="clue-form">
+          <textarea id="clue-input" rows="3" maxlength="240" placeholder="Escribe la definición o pista…" aria-label="Definición"></textarea>
+          <div class="actions">
+            <button type="button" class="btn" id="clue-prev">← Anterior</button>
+            <button type="submit" class="btn btn-primary" id="clue-save">Guardar definición</button>
+          </div>
+        </form>
+        <p class="error" id="clue-error" role="alert"></p>
+      </div>
+      <h3>Mapeo palabra → definición</h3>
+      <table class="mapping">
+        <thead><tr><th>#</th><th>Palabra</th><th>Definición</th><th></th></tr></thead>
+        <tbody id="mapping-body"></tbody>
+      </table>
+      <div class="actions">
+        <button class="btn" id="clues-back">← Editar palabras</button>
+        <button class="btn btn-primary" id="generate-btn" disabled>Generar crucigrama ✨</button>
+      </div>
+    </section>
+
+    <!-- PASO 4: tablero + personalización -->
+    <section class="step" id="step-board" hidden>
+      <div class="board-layout">
+        <div class="board-main card">
+          <div class="toolbar">
+            <button class="btn" id="board-back">← Definiciones</button>
+            <button class="btn" id="regen-btn" title="Probar otra distribución">🔄 Regenerar</button>
+            <label class="switch"><input type="checkbox" id="solution-toggle"> Mostrar solución</label>
+            <span class="spacer"></span>
+            <button class="btn btn-primary" id="pdf-btn">📄 Guardar PDF</button>
+          </div>
+          <div class="warning" id="unplaced-warning" hidden></div>
+          <img id="logo-preview" class="logo-preview" alt="" hidden>
+          <div class="canvas-wrap"><canvas id="board-canvas" aria-label="Vista previa del crucigrama"></canvas></div>
+          <p class="stats" id="board-stats"></p>
+          <div class="clue-lists">
+            <div><h3>Horizontales</h3><ol id="across-list"></ol></div>
+            <div><h3>Verticales</h3><ol id="down-list"></ol></div>
+          </div>
+        </div>
+
+        <aside class="customizer card" id="customizer">
+          <h2>Personalizar</h2>
+
+          <fieldset>
+            <legend>Exportar PDF</legend>
+            <label>Tamaño de papel <select id="pdf-paper"></select></label>
+            <label>Orientación
+              <select id="pdf-orientation">
+                <option value="portrait">Vertical</option>
+                <option value="landscape">Horizontal</option>
+              </select>
+            </label>
+            <label class="switch"><input type="checkbox" id="pdf-solution" checked> Incluir página de solución</label>
+            <p class="hint small">El PDF incluye el crucigrama y todas las definiciones (horizontales y verticales).</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Título</legend>
+            <input type="text" id="title-input" class="title-field" maxlength="80" value="Mi crucigrama" aria-label="Título">
+            <label class="switch"><input type="checkbox" data-prop="showTitle"> Mostrar título en el crucigrama</label>
+            <label>Fuente <select data-prop="titleFontFamily" class="font-select"></select></label>
+            <label>Tamaño <input type="range" min="16" max="80" step="1" data-prop="titleSize"></label>
+            <label>Color <input type="color" data-prop="titleColor"></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tipografía de las casillas</legend>
+            <label>Fuente de letras <select data-prop="fontFamily" class="font-select"></select></label>
+            <label>Fuente de números <select data-prop="numberFontFamily" class="font-select"></select></label>
+            <label>Peso letras
+              <select data-prop="fontWeight">
+                <option value="400">Normal</option>
+                <option value="700">Negrita</option>
+              </select>
+            </label>
+            <label>Color letras <input type="color" data-prop="letterColor"></label>
+            <label>Color números <input type="color" data-prop="numberColor"></label>
+            <div class="font-upload">
+              <label class="btn btn-small">Subir mi fuente (.ttf/.otf/.woff)<input type="file" id="font-file" accept=".ttf,.otf,.woff,.woff2" hidden></label>
+            </div>
+            <p class="hint small">Activa «Mostrar solución» para ver las letras con la fuente elegida.</p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Flechas de inicio</legend>
+            <label class="switch"><input type="checkbox" data-prop="showArrows"> Señalar dónde empieza cada palabra</label>
+            <label>Posición
+              <select data-prop="arrowStyle">
+                <option value="outside">Fuera, apuntando a la 1.ª letra</option>
+                <option value="inside">Dentro de la 1.ª casilla</option>
+              </select>
+            </label>
+            <label>Color <input type="color" data-prop="arrowColor"></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Estilo rápido</legend>
+            <div class="preset-row" id="preset-row"></div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Mis assets (imágenes)</legend>
+            <div class="asset" data-slot="background">
+              <span>Fondo</span>
+              <img class="asset-thumb" alt="" hidden>
+              <label class="btn btn-small">Subir<input type="file" accept="image/*" hidden></label>
+              <button class="btn btn-small btn-ghost asset-remove" hidden>Quitar</button>
+            </div>
+            <div class="asset" data-slot="cell">
+              <span>Textura de casilla</span>
+              <img class="asset-thumb" alt="" hidden>
+              <label class="btn btn-small">Subir<input type="file" accept="image/*" hidden></label>
+              <button class="btn btn-small btn-ghost asset-remove" hidden>Quitar</button>
+            </div>
+            <div class="asset" data-slot="logo">
+              <span>Logo / encabezado</span>
+              <img class="asset-thumb" alt="" hidden>
+              <label class="btn btn-small">Subir<input type="file" accept="image/*" hidden></label>
+              <button class="btn btn-small btn-ghost asset-remove" hidden>Quitar</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Fondo</legend>
+            <label>Color <input type="color" data-prop="bgColor"></label>
+            <label>Ajuste de imagen
+              <select data-prop="bgFit">
+                <option value="cover">Cubrir</option>
+                <option value="contain">Contener</option>
+                <option value="stretch">Estirar</option>
+                <option value="tile">Mosaico</option>
+              </select>
+            </label>
+            <label>Opacidad imagen <input type="range" min="0" max="1" step="0.05" data-prop="bgOpacity"></label>
+            <label>Margen <input type="range" min="0" max="120" step="2" data-prop="padding"></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Casillas</legend>
+            <label>Tamaño <input type="range" min="24" max="80" step="1" data-prop="cellSize"></label>
+            <label>Separación <input type="range" min="0" max="12" step="1" data-prop="gap"></label>
+            <label>Redondeo <input type="range" min="0" max="40" step="1" data-prop="radius"></label>
+            <label>Grosor borde <input type="range" min="0" max="6" step="0.5" data-prop="borderWidth"></label>
+            <label>Color borde <input type="color" data-prop="borderColor"></label>
+            <label>Color casilla <input type="color" data-prop="cellColor"></label>
+            <label>Opacidad casilla <input type="range" min="0" max="1" step="0.05" data-prop="cellOpacity"></label>
+            <label>Opacidad textura <input type="range" min="0" max="1" step="0.05" data-prop="cellImageOpacity"></label>
+            <label class="switch"><input type="checkbox" data-prop="shadow"> Sombra</label>
+          </fieldset>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <dialog id="confirm-dialog" class="dialog">
+    <h3 id="confirm-title"></h3>
+    <div id="confirm-body"></div>
+    <div class="actions">
+      <button class="btn" id="confirm-cancel">Corregir</button>
+      <button class="btn btn-primary" id="confirm-ok">Sí, confirmar</button>
+    </div>
+  </dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Librería externa: jsPDF (si no carga, se usa la impresión del navegador) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <!-- Datos y lógica (sin DOM) -->
+  <script src="js/model.js"></script>
+  <script src="js/generator.js"></script>
+  <!-- Estilo, recursos, dibujo y exportación -->
+  <script src="js/theme.js"></script>
+  <script src="js/fonts.js"></script>
+  <script src="js/assets.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/download.js"></script>
+  <script src="js/pdf-exporter.js"></script>
+  <!-- Interfaz -->
+  <script src="js/ui/dialog.js"></script>
+  <script src="js/ui/wizard-view.js"></script>
+  <script src="js/ui/board-view.js"></script>
+  <script src="js/ui/customizer-view.js"></script>
+  <!-- Controlador -->
+  <script src="js/app.js"></script>
+</body>
+</html>
